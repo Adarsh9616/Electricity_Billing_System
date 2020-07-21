@@ -8,6 +8,7 @@ public class new_customer extends JFrame implements ActionListener{
     JTextField t1,t2,t3,t4,t5,t6,t7;
     JButton b1,b2;
     new_customer(){
+        super("Add Customer");
         setLocation(350,200);
         setSize(650,600);
 
@@ -60,8 +61,8 @@ public class new_customer extends JFrame implements ActionListener{
 
         add(p,"Center");
 
-        ImageIcon ic1 = new ImageIcon(ClassLoader.getSystemResource("icon/hicon1.jpg"));
-        Image i3 = ic1.getImage().getScaledInstance(150, 300,Image.SCALE_DEFAULT);
+        ImageIcon ic1 = new ImageIcon(ClassLoader.getSystemResource("images/hicon1.jpg"));
+        Image i3 = ic1.getImage().getScaledInstance(150, 280,Image.SCALE_DEFAULT);
         ImageIcon ic2 = new ImageIcon(i3);
         l8 = new JLabel(ic2);
 

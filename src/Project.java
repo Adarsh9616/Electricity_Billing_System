@@ -180,7 +180,7 @@ public class Project extends JFrame implements ActionListener{
 
         master.add(m1);
         master.add(m2);
-        master.add(m3);
+        //master.add(m3);
 
         user.add(u1);
         user.add(u2);
@@ -236,6 +236,9 @@ public class Project extends JFrame implements ActionListener{
             System.exit(0);
         }else if(msg.equals("Generate Bill")){
             new generate_bill().setVisible(true);
+
+        }else if(msg.equals("Last Bill")){
+            new LastBill().setVisible(true);
 
         }
 

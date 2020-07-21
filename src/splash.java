@@ -19,6 +19,7 @@ public class splash
             catch (Exception e){}
         }
 
+
     }
     public static class fframe extends JFrame implements Runnable
     {
@@ -42,6 +43,7 @@ public class splash
             {
                 Thread.sleep(7000);
                 this.setVisible(false);
+                new login().setVisible(true);
             }
             catch (Exception e)
             {
