@@ -11,7 +11,7 @@ It lets User perform multiple operations like:-
 
 4- User can Generate Bill.
 
-## About Project:
+## About this Project:
 This Java application was created using Intelli J .
 Additional library was added for the support of JDBC (Required to setup the connection between the Database and Java Application).
 It contains 9 different classes which works together to create a better user experience .
