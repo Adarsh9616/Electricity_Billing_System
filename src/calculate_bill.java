@@ -18,7 +18,7 @@ public class calculate_bill extends JFrame implements ActionListener
 
         l1 = new JLabel("Calculate Electricity Bill");
         l2 = new JLabel("Meter No");
-        l3 = new JLabel("Units Cosumed");
+        l3 = new JLabel("Units Consumed");
         l5 = new JLabel("Month");
 
         t1 = new JTextField();
@@ -59,7 +59,7 @@ public class calculate_bill extends JFrame implements ActionListener
         b2.setForeground(Color.WHITE);
 
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("images/hicon2.jpg"));
-        Image i2 = i1.getImage().getScaledInstance(180, 270,Image.SCALE_DEFAULT);
+        Image i2 = i1.getImage().getScaledInstance(180, 270,Image.SCALE_SMOOTH);
         ImageIcon i3 = new ImageIcon(i2);
         l4 = new JLabel(i3);
 
@@ -93,25 +93,88 @@ public class calculate_bill extends JFrame implements ActionListener
         getContentPane().setBackground(Color.WHITE);
         setSize(650,500);
         setLocation(350,220);
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    }
+    private int calculateTotalBill(int units) {
+        int energyCharge = units * 7;
+
+        return energyCharge
+                + 50
+                + 12
+                + 102
+                + 20
+                + 50;
     }
     public void actionPerformed(ActionEvent ae){
-        String a = c1.getSelectedItem();
-        String b = t1.getText();
-        String c = c2.getSelectedItem();
+        String meterNo = c1.getSelectedItem();
+        String unitsConsumed = t1.getText().trim();
+        String month = c2.getSelectedItem();
 
-        int p1 = Integer.parseInt(b);
+        if(ae.getSource()==b2){
+            setVisible(false);
+            dispose();
+            return;
+        }
+        //int p1 = Integer.parseInt(b);
 
-        int p2 = p1*7;
-        int p3 = p2+50+12+102+20+50;
+        if (unitsConsumed.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter units consumed."
+            );
+            return;
+        }
+        int units=0;
+        int totalBill=0;
+        try {
+            units = Integer.parseInt(unitsConsumed);
+            if (units < 0) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Units cannot be negative."
+                );
+                return;
+            }
+            totalBill = calculateTotalBill(units);
 
-        String q = "insert into bill values('"+a+"','"+c+"','"+b+"','"+p3+"')";
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a valid number."
+            );
+            return;
+        }
+
+
+
+        //String q = "insert into bill values('"+a+"','"+c+"','"+b+"','"+p3+"')";
+
+
 
         try{
             conn c1 = new conn();
-            c1.s.executeUpdate(q);
-            JOptionPane.showMessageDialog(null,"Bill Updated");
-        }catch(Exception aee){
-            aee.printStackTrace();
+
+            PreparedStatement ps = c1.c.prepareStatement("insert into bill values(?,?,?,?)");
+
+            ps.setString(1,meterNo);
+            ps.setString(2,month);
+            ps.setString(3,unitsConsumed);
+            ps.setInt(4,totalBill);
+
+            ps.executeUpdate();
+            //c1.s.executeUpdate(q);
+            JOptionPane.showMessageDialog(this,"Bill generated successfully!");
+
+            dispose();
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to generate bill.\n"
+                            + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
 
 

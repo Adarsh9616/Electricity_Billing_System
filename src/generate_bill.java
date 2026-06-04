@@ -49,7 +49,7 @@ public class generate_bill extends JFrame implements ActionListener{
         t1 = new JTextArea(50,15);
         JScrollPane jsp = new JScrollPane(t1);
         t1.setFont(new Font("Senserif",Font.ITALIC,18));
-
+        t1.setEditable(false);
         b1 = new JButton("Generate Bill");
 
         p1.add(l1);
@@ -63,15 +63,26 @@ public class generate_bill extends JFrame implements ActionListener{
         b1.addActionListener(this);
 
         setLocation(350,40);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     public void actionPerformed(ActionEvent ae){
         try{
             conn c = new conn();
 
-            String month = c2.getSelectedItem();
-            t1.setText("\tReliance Power Limited\nELECTRICITY BILL FOR THE MONTH OF "+month+" ,2018\n\n\n");
+            int year = java.time.Year.now().getValue();
 
-            ResultSet rs = c.s.executeQuery("select * from emp where meter_number="+c1.getSelectedItem());
+            String month = c2.getSelectedItem();
+            t1.setText("\tReliance Power Limited\nELECTRICITY BILL FOR THE MONTH OF "+month+" ,"+year+"\n\n\n");
+
+            //ResultSet rs = c.s.executeQuery("select * from emp where meter_number="+c1.getSelectedItem());
+
+            PreparedStatement ps = c.c.prepareStatement(
+                    "SELECT * FROM emp WHERE meter_number = ?"
+            );
+
+            ps.setString(1, c1.getSelectedItem());
+
+            ResultSet rs = ps.executeQuery();
 
             if(rs.next()){
                 t1.append("\n    Customer Name:"+rs.getString("name"));
@@ -104,7 +115,14 @@ public class generate_bill extends JFrame implements ActionListener{
 
             }
 
-            rs = c.s.executeQuery("select * from bill where meter_number="+c1.getSelectedItem());
+            PreparedStatement billPs = c.c.prepareStatement(
+                    "SELECT * FROM bill WHERE meter_number = ? AND month = ?"
+            );
+
+            billPs.setString(1, c1.getSelectedItem());
+            billPs.setString(2, month);
+
+            rs = billPs.executeQuery();
 
             if(rs.next()){
                 t1.append("\n    Current Month :\t"+rs.getString("month"));
@@ -120,7 +138,12 @@ public class generate_bill extends JFrame implements ActionListener{
 
 
         }catch(Exception e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to generate bill.\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

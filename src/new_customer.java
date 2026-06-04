@@ -62,7 +62,7 @@ public class new_customer extends JFrame implements ActionListener{
         add(p,"Center");
 
         ImageIcon ic1 = new ImageIcon(ClassLoader.getSystemResource("images/hicon1.jpg"));
-        Image i3 = ic1.getImage().getScaledInstance(150, 280,Image.SCALE_DEFAULT);
+        Image i3 = ic1.getImage().getScaledInstance(150, 280,Image.SCALE_SMOOTH);
         ImageIcon ic2 = new ImageIcon(i3);
         l8 = new JLabel(ic2);
 
@@ -74,28 +74,68 @@ public class new_customer extends JFrame implements ActionListener{
         b1.addActionListener(this);
         b2.addActionListener(this);
 
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     public void actionPerformed(ActionEvent ae){
 
-        String a = t1.getText();
-        String c = t2.getText();
-        String d = t3.getText();
-        String e = t4.getText();
-        String f = t5.getText();
-        String g = t6.getText();
-        String h = t7.getText();
+        if(ae.getSource()==b2){
+            dispose();
+            return;
+        }
+//        String a = t1.getText();
+//        String c = t2.getText();
+//        String d = t3.getText();
+//        String e = t4.getText();
+//        String f = t5.getText();
+//        String g = t6.getText();
+//        String h = t7.getText();
 
-        String q1 = "insert into emp values('"+a+"','"+c+"','"+d+"','"+e+"','"+f+"','"+g+"','"+h+"')";
+        String name=t1.getText().trim();
+        String meterNo=t2.getText().trim();
+        String address=t3.getText().trim();
+        String state=t4.getText().trim();
+        String city=t5.getText().trim();
+        String email=t6.getText().trim();
+        if(!email.contains("@")){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Please enter a valid email."
+            );
+            return;
+        }
+        String phone=t7.getText().trim();
+
+        if(name.isEmpty() || meterNo.isEmpty() || address.isEmpty() || state.isEmpty() || city.isEmpty() || email.isEmpty() || phone.isEmpty()){
+            JOptionPane.showMessageDialog(
+                    this,
+                    "All fields are required."
+            );
+            return;
+        }
+//        String q1 = "insert into emp values('"+a+"','"+c+"','"+d+"','"+e+"','"+f+"','"+g+"','"+h+"')";
 
         try{
             conn c1 = new conn();
-            c1.s.executeUpdate(q1);
-            JOptionPane.showMessageDialog(null,"Employee Created");
-            this.setVisible(false);
-
+            PreparedStatement ps = c1.c.prepareStatement("insert into emp values(?,?,?,?,?,?,?)");
+            ps.setString(1,name);
+            ps.setString(2,meterNo);
+            ps.setString(3,address);
+            ps.setString(4,state);
+            ps.setString(5,city);
+            ps.setString(6,email);
+            ps.setString(7,phone);
+            ps.executeUpdate();
+//            c1.s.executeUpdate(q1);
+            JOptionPane.showMessageDialog(this,"Customer created successfully!");
+            dispose();
 
         }catch(Exception ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to create customer.\n" + ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
 
     }

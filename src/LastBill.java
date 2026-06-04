@@ -16,7 +16,7 @@ public class LastBill extends JFrame implements ActionListener
 
         p1 = new JPanel();
 
-        l1 = new JLabel("Generate Bill");
+        l1 = new JLabel("Last Bill Details");
 
         c1 = new Choice();
 
@@ -35,8 +35,9 @@ public class LastBill extends JFrame implements ActionListener
         t1 = new JTextArea(50,15);
         JScrollPane jsp = new JScrollPane(t1);
         t1.setFont(new Font("Senserif",Font.ITALIC,18));
+        t1.setEditable(false);
 
-        b1 = new JButton("Generate Bill");
+        b1 = new JButton("View Bills");
 
         p1.add(l1);
         p1.add(c1);
@@ -48,14 +49,21 @@ public class LastBill extends JFrame implements ActionListener
         b1.addActionListener(this);
 
         setLocation(350,40);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
     public void actionPerformed(ActionEvent ae){
         try{
             conn c = new conn();
 
-            ResultSet rs = c.s.executeQuery("select * from emp where meter_number="+c1.getSelectedItem());
+            PreparedStatement ps = c.c.prepareStatement(
+                    "SELECT * FROM emp WHERE meter_number = ?"
+            );
 
+            ps.setString(1, c1.getSelectedItem());
+
+            ResultSet rs = ps.executeQuery();
             if(rs.next()){
+                t1.setText("");
                 t1.append("\n    Customer Name:"+rs.getString("name"));
                 t1.append("\n    Meter Number:  "+rs.getString("meter_number"));
                 t1.append("\n    Address:            "+rs.getString("address"));
@@ -69,8 +77,11 @@ public class LastBill extends JFrame implements ActionListener
 
             t1.append("Details of the Last Bills\n\n\n");
 
-            rs = c.s.executeQuery("select * from bill where meter_number="+c1.getSelectedItem());
-
+            PreparedStatement billPs = c.c.prepareStatement(
+                    "SELECT * FROM bill WHERE meter_number = ?"
+            );
+            billPs.setString(1, c1.getSelectedItem());
+            rs = billPs.executeQuery();
             while(rs.next()){
                 t1.append("       "+ rs.getString("month") + "           " +rs.getString("amount") + "\n");
             }
@@ -81,7 +92,12 @@ public class LastBill extends JFrame implements ActionListener
 
 
         }catch(Exception e){
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Failed to load bill history.\n" + e.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
         }
     }
 

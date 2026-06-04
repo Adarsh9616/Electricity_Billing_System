@@ -1,0 +1,53 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+out/
+
+# Build directories
+build/
+target/
+
+# Compiled Java files
+*.class
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Database files (if any local DB is used)
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+
+# Java archives
+*.jar
+*.war
+*.ear
+
+# Maven
+.mvn/
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+
+# VS Code
+.vscode/
+
+# Database connection file
+**/conn.java
+
+
+# Generated screenshots (optional)
+# ScreenShots/*.png
+# ScreenShots/*.jpg
