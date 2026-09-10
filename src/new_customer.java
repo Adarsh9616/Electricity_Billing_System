@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import java.sql.*;
 
 public class new_customer extends JFrame implements ActionListener{
     JLabel l1,l2,l3,l4,l5,l6,l7,l8;
